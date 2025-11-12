@@ -16,7 +16,9 @@ import os
 from copy import deepcopy
 from dataclasses import dataclass
 from typing import Any, Optional, Union
-
+from omini_vex.ray_distributed.ray_actor_enviroment_registry import (
+    get_actor_python_env,
+)
 import ray
 from ray.util.placement_group import PlacementGroup
 from ray.util.scheduling_strategies import PlacementGroupSchedulingStrategy
@@ -431,7 +433,9 @@ class RayWorkerGroup:
                 env_vars[k] = v
 
         # Get the python environment for the actor
-        actor_python_env = 'uv'
+        actor_python_env = get_actor_python_env(
+            remote_worker_builder.ray_actor_class_fqn
+        )
         if actor_python_env.startswith("uv"):
             # If the py_executable begins with uv it signals that we need to create a
             #  local venv first and then replace the py_executable with the local venv's python.
